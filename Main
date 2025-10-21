@@ -27,7 +27,7 @@ local function findAndTeleportToCandyCorn()
 
 	for _, obj in ipairs(workspace:GetDescendants()) do
 		if isValidCandyCorn(obj) then
-			HumanoidRootPart.CFrame = obj.CFrame + Vector3.new(0, 5, 0)
+			HumanoidRootPart.CFrame = obj.CFrame + Vector3.new(0, 0, 0)
 			return
 		end
 	end

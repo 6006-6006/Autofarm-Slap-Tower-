@@ -1,0 +1,40 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("[🎃] Slap Tower Hub🖐️", GrapeTheme)
+local Tab = Window:NewTab("Credits")
+local Section = Tab:NewSection("UI made by Princelion33")
+local Section = Tab:NewSection("Scripthub made by enneated on discord")
+local Section = Tab:NewSection("Love from enneated :3 ❤️ and  please don't roast me for using task.wait(math.huge) to stop the loop I'm bad at coding :( )")
+local Tab = Window:NewTab("Main")
+local Section = Tab:NewSection("may 19th")
+Section:NewToggle("Autofarm", "happy Halloween my skibidi Sigmas 🎃❤️", function(state)
+    if state then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/6006-6006/Autofarm-Slap-Tower-/refs/heads/main/Main"))()
+    else
+        while true do
+        print("Loop stopped")
+        task.wait(math.huge)
+        end
+    end
+end) 
+Section:NewButton("Teleport to nearest candy", "", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/6006-6006/Autofarm-Slap-Tower-/refs/heads/main/RitfLF0qB2"))()
+end)
+Section:NewButton("Check if correct game", "", function()
+
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+
+local correctPlaceId = 95508886069297
+
+local function notif()
+    StarterGui:SetCore("SendNotification", {
+        Title = "Wrong Game!",
+        Text = "You're not in the correct game, the correct game id is 95508886069297.",
+        Duration = 5, -- seconds
+    })
+end
+
+if game.PlaceId ~= correctPlaceId then
+    notif()
+end
+end)

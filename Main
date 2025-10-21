@@ -1,0 +1,39 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function isValidCandyCorn(part)
+	if part:IsA("BasePart") and part.Name == "CandyCorn" then
+		local hasMesh = false
+		local hasTouchInterest = false
+
+		for _, child in ipairs(part:GetChildren()) do
+			if child:IsA("SpecialMesh") or child:IsA("BlockMesh") or child:IsA("DataModelMesh") then
+				hasMesh = true
+			elseif child:IsA("TouchTransmitter") or child.Name == "TouchInterest" then
+				hasTouchInterest = true
+			end
+		end
+
+		return hasMesh and hasTouchInterest
+	end
+
+	return false
+end
+
+local function findAndTeleportToCandyCorn()
+	local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+	local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+	if not HumanoidRootPart then return end
+
+	for _, obj in ipairs(workspace:GetDescendants()) do
+		if isValidCandyCorn(obj) then
+			HumanoidRootPart.CFrame = obj.CFrame + Vector3.new(0, 5, 0)
+			return
+		end
+	end
+end
+
+while true do
+	task.wait(3)
+	pcall(findAndTeleportToCandyCorn)
+end

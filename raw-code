@@ -1,0 +1,271 @@
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local CollectionService = game:GetService("CollectionService")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "GoogolHub"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+CollectionService:AddTag(ScreenGui, "main")
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Parent = ScreenGui
+mainFrame.Size = UDim2.new(0, 448, 0, 388)
+mainFrame.Position = UDim2.new(0, 306, 0, 96)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainFrame.BackgroundTransparency = 0.5
+mainFrame.BorderSizePixel = 0
+Instance.new("UICorner", mainFrame)
+
+do
+    local frame = mainFrame
+    local dragging = false
+    local dragInput, dragStart, startPos
+
+    local function updateInput(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            updateInput(input)
+        end
+    end)
+end
+
+local content = Instance.new("Frame")
+content.Name = "Content"
+content.Parent = mainFrame
+content.Size = UDim2.new(1, 0, 1, 0)
+content.BackgroundTransparency = 1
+content.BorderSizePixel = 0
+
+local function makeRainbow(gui)
+    task.spawn(function()
+        local t = 0
+        while gui.Parent do
+            task.wait(0.05)
+            t = t + 0.01
+            gui.BackgroundColor3 = Color3.fromHSV(t % 1, 1, 1)
+        end
+    end)
+end
+
+local TitleFrame = Instance.new("Frame")
+TitleFrame.Name = "Title"
+TitleFrame.Parent = content
+TitleFrame.Size = UDim2.new(0, 434, 0, 50)
+TitleFrame.Position = UDim2.new(0, 8, 0, 6)
+TitleFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TitleFrame.BackgroundTransparency = 0
+TitleFrame.BorderSizePixel = 0
+Instance.new("UICorner", TitleFrame)
+makeRainbow(TitleFrame)
+
+local TitleText = Instance.new("TextLabel")
+TitleText.Parent = TitleFrame
+TitleText.Size = UDim2.new(0, 400, 0, 46)
+TitleText.Position = UDim2.new(0, 12, 0, 0)
+TitleText.BackgroundTransparency = 1
+TitleText.Text = "Googol hub"
+TitleText.TextSize = 18
+TitleText.TextColor3 = Color3.fromRGB(0,0,0)
+TitleText.Font = Enum.Font.SourceSansBold
+
+local function createButton(name, pos, size, text)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Parent = content
+    btn.Size = size
+    btn.Position = pos
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    btn.BackgroundTransparency = 0.5
+    btn.BorderSizePixel = 0
+    Instance.new("UICorner", btn)
+    makeRainbow(btn)
+    return btn
+end
+
+local buttons = {
+    {"TrollOneTeleport", UDim2.new(0,16,0,128), UDim2.new(0,122,0,50), "Tp to troll 1"},
+    {"TrollTwoTeleport", UDim2.new(0,148,0,130), UDim2.new(0,122,0,50), "Tp to troll 2"},
+    {"TrollThreeTeleport", UDim2.new(0,278,0,128), UDim2.new(0,122,0,50), "Tp to troll 3"},
+    {"TrollFourTeleport", UDim2.new(0,18,0,188), UDim2.new(0,122,0,50), "Tp to troll 4"},
+    {"StartTeleport", UDim2.new(0,282,0,188), UDim2.new(0,122,0,50), "Tp to start"},
+    {"EndTeleport", UDim2.new(0,150,0,188), UDim2.new(0,122,0,50), "Tp to end"},
+    {"CandyTp", UDim2.new(0,112,0,70), UDim2.new(0,116,0,50), "Tp to nearest candy"},
+    {"CandyAura", UDim2.new(0,18,0,254), UDim2.new(0,122,0,50), "Candy Aura"},
+    {"CorrectGameCheck", UDim2.new(0,236,0,70), UDim2.new(0,122,0,50), "Check if correct game"},
+    {"BuyBox1", UDim2.new(0,282,0,254), UDim2.new(0,122,0,50), "Buy Box One"},
+    {"BuyBox2", UDim2.new(0,20,0,320), UDim2.new(0,122,0,50), "Buy Box Two"},
+    {"Autofarm", UDim2.new(0,14,0,70), UDim2.new(0,92,0,50), "Autofarm"},
+    {"CbringOthers", UDim2.new(0,154,0,254), UDim2.new(0,122,0,50), "Cbring others"},
+}
+
+local guiButtons = {}
+for _,v in ipairs(buttons) do
+    guiButtons[v[1]] = createButton(v[1], v[2], v[3], v[4])
+end
+
+local function teleportTo(pos)
+    local character = Player.Character or Player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    hrp.CFrame = CFrame.new(pos)
+end
+
+local function teleportToCandy()
+    local character = Player.Character or Player.CharacterAdded:Wait()
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    for _, obj in ipairs(Workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and obj.Name == "CandyCorn" then
+            hrp.CFrame = obj.CFrame + Vector3.new(0,5,0)
+            return
+        end
+    end
+end
+
+local function candyAura()
+    local remote = ReplicatedStorage:FindFirstChild("TeleportCandyCorn")
+    local rootPart
+
+    local function getRootPart(character)
+        if not character then return nil end
+        return character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso")
+    end
+
+    rootPart = getRootPart(Player.Character)
+
+    Player.CharacterAdded:Connect(function(char)
+        rootPart = getRootPart(char) or char:WaitForChild("HumanoidRootPart", 5)
+    end)
+
+    local function hasMesh(part)
+        if not part then return false end
+        if part:FindFirstChildOfClass("Mesh") then return true end
+        if part:FindFirstChild("Mesh") then return true end
+        if part:FindFirstChildOfClass("SpecialMesh") then return true end
+        if part:FindFirstChildOfClass("CylinderMesh") then return true end
+        if part:FindFirstChildOfClass("BlockMesh") then return true end
+        return false
+    end
+
+    local function hasTouch(part)
+        if not part then return false end
+        if part:FindFirstChildOfClass("TouchTransmitter") then return true end
+        if part:FindFirstChild("TouchInterest") then return true end
+        return false
+    end
+
+    local function qualifies(part)
+        if not (part and part:IsA("BasePart") and part.Name == "CandyCorn") then
+            return false
+        end
+        return hasMesh(part) and hasTouch(part)
+    end
+
+    local function teleportLocally(part)
+        if not rootPart or not part or not part:IsA("BasePart") then return end
+        pcall(function()
+            part.CFrame = rootPart.CFrame
+        end)
+    end
+
+    local function requestServerTeleport(part)
+        if remote and remote:IsA("RemoteEvent") then
+            pcall(function()
+                remote:FireServer(part)
+            end)
+        end
+    end
+
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        if qualifies(obj) then
+            teleportLocally(obj)
+            requestServerTeleport(obj)
+        end
+    end
+
+    Workspace.DescendantAdded:Connect(function(obj)
+        if obj:IsA("BasePart") and obj.Name == "CandyCorn" then
+            task.wait(0.5)
+            if qualifies(obj) then
+                teleportLocally(obj)
+                requestServerTeleport(obj)
+            end
+        end
+    end)
+end
+
+local function autofarmCandy()
+    while true do
+        task.wait(3)
+        pcall(teleportToCandy)
+    end
+end
+
+guiButtons.TrollOneTeleport.MouseButton1Click:Connect(function() teleportTo(Vector3.new(18,168,20)) end)
+guiButtons.TrollTwoTeleport.MouseButton1Click:Connect(function() teleportTo(Vector3.new(-50,290,84)) end)
+guiButtons.TrollThreeTeleport.MouseButton1Click:Connect(function() teleportTo(Vector3.new(5,522,85)) end)
+guiButtons.TrollFourTeleport.MouseButton1Click:Connect(function() teleportTo(Vector3.new(35,711,87)) end)
+guiButtons.StartTeleport.MouseButton1Click:Connect(function() teleportTo(Vector3.new(-47,-1,20)) end)
+guiButtons.EndTeleport.MouseButton1Click:Connect(function() teleportTo(Vector3.new(-175,783,50)) end)
+guiButtons.CandyTp.MouseButton1Click:Connect(teleportToCandy)
+guiButtons.CandyAura.MouseButton1Click:Connect(function() task.spawn(candyAura) end)
+guiButtons.Autofarm.MouseButton1Click:Connect(function() task.spawn(autofarmCandy) end)
+
+guiButtons.CorrectGameCheck.MouseButton1Click:Connect(function()
+    local correctPlaceId = 95508886069297
+    if game.PlaceId ~= correctPlaceId then
+        StarterGui:SetCore("SendNotification", {
+            Title = "Wrong Game!",
+            Text = "You're not in the correct game, the correct game id is "..correctPlaceId..".",
+            Duration = 5,
+        })
+    end
+end)
+
+guiButtons.BuyBox1.MouseButton1Click:Connect(function()
+    local args = {"HalloweenBox1","Candy1"}
+    ReplicatedStorage:WaitForChild("PurchaseBoxWithCandy"):FireServer(unpack(args))
+end)
+guiButtons.BuyBox2.MouseButton1Click:Connect(function()
+    local args = {"HalloweenBox2","Candy1"}
+    ReplicatedStorage:WaitForChild("PurchaseBoxWithCandy"):FireServer(unpack(args))
+end)
+
+return ScreenGui
